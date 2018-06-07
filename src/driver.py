@@ -90,7 +90,7 @@ if __name__ == "__main__":
     context.reservation = ReservationContextDetails(*(None, ) * 7)
     context.reservation.reservation_id = '0cc17f8c-75ba-495f-aeb5-df5f0f9a0e97'
     context.resource.attributes = {}
-    context.resource.attributes['{}.Scheme'.format(CiscoacicontrollerDriver.SHELL_NAME)] = "https"
+    context.resource.attributes['{}.Scheme'.format(CiscoacicontrollerDriver.SHELL_NAME)] = "HTTPS"
     context.resource.attributes['{}.Controller TCP Port'.format(CiscoacicontrollerDriver.SHELL_NAME)] = 443
     context.resource.attributes['{}.User'.format(CiscoacicontrollerDriver.SHELL_NAME)] = user
     context.resource.attributes['{}.Password'.format(CiscoacicontrollerDriver.SHELL_NAME)] = password

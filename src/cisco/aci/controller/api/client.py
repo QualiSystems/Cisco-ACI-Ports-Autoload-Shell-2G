@@ -12,7 +12,7 @@ class CiscoACIControllerHTTPClient(object):
         :param str scheme: protocol (http|https)
         :param int port: controller port
         """
-        full_url = "{}://{}:{}".format(scheme, address, port)
+        full_url = "{}://{}:{}".format(scheme.lower(), address, port)
         self._logger = logger
         self._session = aci.Session(url=full_url, uid=user, pwd=password)
         self._login()
