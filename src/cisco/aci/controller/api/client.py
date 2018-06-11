@@ -42,6 +42,9 @@ class CiscoACIControllerHTTPClient(object):
                 nodes = ports_data.setdefault(interface.pod, {})
                 slots = nodes.setdefault(interface.node, {})
                 ports = slots.setdefault(interface.module, [])
-                ports.append({"id": interface.port})
+                ports.append({
+                    "id": interface.port,
+                    "name": interface.name
+                })
 
         return ports_data

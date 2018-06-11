@@ -2,15 +2,15 @@
 # -*- coding: utf-8 -*-
 
 """
-Tests for `CiscoacicontrollerDriver`
+Tests for `CiscoAciPortsAutoloadDriver`
 """
 
 import unittest
 
-from driver import CiscoacicontrollerDriver
+from driver import CiscoAciPortsAutoloadDriver
 
 
-class TestCiscoacicontrollerDriver(unittest.TestCase):
+class TestCiscoAciPortsAutoloadDriver(unittest.TestCase):
 
     def setUp(self):
         pass

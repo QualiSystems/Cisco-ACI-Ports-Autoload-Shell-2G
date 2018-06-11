@@ -7,7 +7,7 @@ AVAILABLE_SHELL_TYPES = ["CS_CiscoACIController", "CS_CiscoACIPod", "CS_CiscoACI
 
 
 class CiscoACIController(AbstractResource):
-    RESOURCE_MODEL = "Cisco ACI Controller"
+    RESOURCE_MODEL = "Cisco ACI Ports Controller"
     RELATIVE_PATH_TEMPLATE = ""
 
     def __init__(self, shell_name, name, unique_id, shell_type="CS_CiscoACIController"):

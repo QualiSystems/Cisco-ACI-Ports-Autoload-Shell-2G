@@ -21,7 +21,7 @@ class CiscoACIAutoloadFlow(object):
         :return:
         """
         root_resource = models.CiscoACIController(shell_name=self._resource_config.shell_name,
-                                                  name="Cisco ACI Controller",
+                                                  name="Cisco ACI Ports Controller",
                                                   unique_id=self._resource_config.fullname)
 
         ports_data = self._aci_api_client.get_leaf_ports()
