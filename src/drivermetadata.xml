@@ -1,5 +1,11 @@
 <Driver Description="Describe the purpose of your CloudShell shell" MainClass="driver.CiscoAciPortsAutoloadDriver" Name="CiscoAciPortsAutoloadDriver" Version="1.0.0">
-    <Layout>
-        <Category Name="Hidden Commands"></Category>
-    </Layout>
+  <Layout>
+      <Category Name="Hidden Commands">
+          <Command Name="ApplyConnectivityChanges" DisplayName="ApplyConnectivityChanges" Tags="allow_unreserved">
+              <Parameters>
+                  <Parameter Name="request" Type="String" Mandatory = "True" DefaultValue="" Description=""/>
+              </Parameters>
+          </Command>
+      </Category>
+  </Layout>
 </Driver>

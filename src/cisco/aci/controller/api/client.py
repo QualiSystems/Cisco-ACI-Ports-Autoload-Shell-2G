@@ -1,5 +1,16 @@
 import acitoolkit.acitoolkit as aci
 
+INTERFACE_TYPE = "eth"
+L2_INTERFACE_ENCAP_TYPE = "vlan"
+
+PORT_TRUNK_MODE = "regular"
+PORT_ACCESS_UNTAGGED_MODE = "untagged"
+PORT_ACCESS_MODE = "native"
+PORT_MODE_MAP = {
+    "access": PORT_ACCESS_MODE,  # todo: clarify which option use for the access mode (802.1P|Untagged)
+    "trunk": PORT_TRUNK_MODE
+}
+
 
 class CiscoACIControllerHTTPClient(object):
     def __init__(self, logger, address, user=None, password=None, scheme="https", port=443):
@@ -29,13 +40,35 @@ class CiscoACIControllerHTTPClient(object):
                                .format(resp.status_code, resp.content))
             raise Exception("Unable to login to the ACI Controller")
 
+    def get_tenant(self, tenant_name):
+        """
+
+        :return:
+        """
+        for tenant in aci.Tenant.get(session=self._session):
+            if tenant_name == tenant.name:
+                return tenant
+
+        raise Exception("Unable to find Tenant with name '{}'".format(tenant_name))
+
+    def get_epg(self, epg_name, tenant=None):
+        """
+
+        :return:
+        """
+        for epg in aci.EPG.get(session=self._session, tenant=tenant):
+            if epg_name == epg.name:
+                return epg
+
+        raise Exception("Unable to find EPG with name '{}'".format(epg_name))
+
     def get_leaf_ports(self):
         """Get leaf ports in the next format: pod->node->slot->port
 
         :return:
         """
         ports_data = {}
-        interfaces = aci.Interface.get(self._session)
+        interfaces = aci.Interface.get(session=self._session)
 
         for interface in interfaces:
             if interface.attributes['porttype'].lower() == "leaf":
@@ -48,3 +81,67 @@ class CiscoACIControllerHTTPClient(object):
                 })
 
         return ports_data
+
+    def add_port_to_epg(self, pod, node, module, port, vlan_id, port_mode, tenant_name, epg_name):
+        """
+
+        :param pod:
+        :param node:
+        :param module:
+        :param port:
+        :param vlan_id:
+        :param port_mode:
+        :param tenant_name:
+        :param epg_name:
+        :return:
+        """
+        tenant = self.get_tenant(tenant_name)
+
+        epg = self.get_epg(epg_name=epg_name, tenant=tenant)
+
+        # it doesn't apply new changes without link from tenant to AppProfile.
+        # since we don't store AppProfile on the CS side there is a hack to get AppProfile Name
+        # todo: add AppProfile to the Autoload
+        app_profile_dn = aci.EPG._get_parent_dn(epg.dn)
+        aci.AppProfile._get_name_from_dn(app_profile_dn)
+        app_profile_name = aci.AppProfile._get_name_from_dn(app_profile_dn)
+
+        app = aci.AppProfile(app_profile_name, tenant)
+        # re-create EPG model with a link to AppProfile
+        epg = aci.EPG(epg_name=epg_name, parent=app)
+
+        # create the physical interface object
+        intf = aci.Interface(interface_type=INTERFACE_TYPE,
+                             pod=pod,
+                             node=node,
+                             module=module,
+                             port=port)
+
+        # create a VLAN interface and attach to the physical interface
+        vlan_intf = aci.L2Interface(name=vlan_id,
+                                    encap_type=L2_INTERFACE_ENCAP_TYPE,
+                                    encap_id=vlan_id,
+                                    encap_mode=PORT_MODE_MAP[port_mode])
+
+        # "regular" for normal dot1q tagged traffic, "untagged" for traffic
+        # reaching the leaf without any dot1q tags, and "native" for
+        # traffic tagged with a 802.1P tag.
+
+        vlan_intf.attach(intf)
+
+        # attach EPG to the VLAN interface
+        epg.attach(vlan_intf)
+
+        # push the tenant config to the APIC
+        resp = tenant.push_to_apic(self._session)
+        self._logger.info("Pushed Tenant data {}".format(tenant.get_json()))
+
+        if not resp.ok:
+            raise Exception('Could not push tenant configuration to APIC. Error response: {}'.format(resp.content))
+
+        # push the interface attachment to the APIC
+        self._logger.info("Pushed Interface data {}".format(intf.get_json()))
+        resp = intf.push_to_apic(self._session)
+
+        if not resp.ok:
+            raise Exception('Could not push interface configuration to APIC. Error response: {}'.format(resp.content))

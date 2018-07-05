@@ -39,7 +39,7 @@ class CiscoACIAutoloadFlow(object):
                                                     unique_id="{}.{}.{}".format(self._resource_config.fullname,
                                                                                 pod_id, node_id))
 
-                pod_resource.add_sub_resource(pod_id, node_resource)
+                pod_resource.add_sub_resource(node_id, node_resource)
 
                 for slot_id, slot_data in node_data.iteritems():
                     slot_resource = models.CiscoACISlot(shell_name=self._resource_config.shell_name,
