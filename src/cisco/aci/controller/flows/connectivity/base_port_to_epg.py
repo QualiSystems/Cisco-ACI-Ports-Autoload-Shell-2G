@@ -1,15 +1,16 @@
 import re
 
 from cloudshell.api.common_cloudshell_api import CloudShellAPIError
+from cloudshell.devices.flows.action_flows import BaseFlow
 
-
-ACI_EPG_RESOURCE_MODEL = "Cisco ACI EPG Controller.CiscoACIEndPointGroup"
 ACI_TENANT_RESOURCE_MODEL = "Cisco ACI EPG Controller.CiscoACITenant"
+ACI_APP_PROFILE_RESOURCE_MODEL = "Cisco ACI EPG Controller.CiscoACIAppProfile"
+ACI_EPG_RESOURCE_MODEL = "Cisco ACI EPG Controller.CiscoACIEndPointGroup"
 ACI_NAME_ATTR = "ACI Name"
 CS_API_UNABLE_TO_LOCATE_ERROR_CODE = "102"
 
 
-class CiscoACIAddPortToEPGFlow(object):
+class BasePortToEPGActionFlow(BaseFlow):
     def __init__(self, resource_config, cs_api, aci_api_client, reservation_id, logger):
         """
 
@@ -17,14 +18,13 @@ class CiscoACIAddPortToEPGFlow(object):
         :param resource_config:
         :param logger:
         """
+        super(BasePortToEPGActionFlow, self).__init__(cli_handler=None, logger=logger)
         self._resource_config = resource_config
         self._cs_api = cs_api
         self._aci_api_client = aci_api_client
         self._reservation_id = reservation_id
-        self._logger = logger
 
-    @staticmethod
-    def _get_resource_attribute_value(resource, attribute_name):
+    def _get_resource_attribute_value(self, resource, attribute_name):
         """
         :param resource cloudshell.api.cloudshell_api.ResourceInfo:
         :param str attribute_name:
@@ -61,14 +61,21 @@ class CiscoACIAddPortToEPGFlow(object):
                     resource=epg_resource,
                     attribute_name="{}.{}".format(ACI_EPG_RESOURCE_MODEL, ACI_NAME_ATTR))
 
-                tenant_full_name = epg_resource.Name.rsplit("/", 1)[0]
+                app_profile_full_name = epg_resource.Name.rsplit("/", 1)[0]
+                app_profile_resource = self._cs_api.GetResourceDetails(app_profile_full_name)
+
+                app_profile_aci_name = self._get_resource_attribute_value(
+                    resource=app_profile_resource,
+                    attribute_name="{}.{}".format(ACI_APP_PROFILE_RESOURCE_MODEL, ACI_NAME_ATTR))
+
+                tenant_full_name = app_profile_resource.Name.rsplit("/", 1)[0]
                 tenant_resource = self._cs_api.GetResourceDetails(tenant_full_name)
 
                 tenant_aci_name = self._get_resource_attribute_value(
                     resource=tenant_resource,
                     attribute_name="{}.{}".format(ACI_TENANT_RESOURCE_MODEL, ACI_NAME_ATTR))
 
-                return tenant_aci_name, epg_aci_name
+                return tenant_aci_name, app_profile_aci_name, epg_aci_name
 
         raise Exception("Unable to find connector to the EPG for port in the reservation")
 
@@ -80,24 +87,10 @@ class CiscoACIAddPortToEPGFlow(object):
         """
         return re.search("^.*/PD(?P<pod>\d)/N(?P<node>.*)/S(?P<slot>.*)/P(?P<port>.*)$", port_address).groupdict()
 
-    def execute_flow(self, vlan_range, port_mode, port_name, qnq, c_tag):
+    def _get_phys_connected_device(self, port_resource):
         """
 
+        :param port_resource:
         :return:
         """
-        port = self._cs_api.GetResourceDetails(port_name)
-
-        phys_connected_devices = [device.FullPath for device in port.Connections]
-
-        tenant_name, epg_name = self._get_epg_data(phys_connected_devices=phys_connected_devices)
-
-        port_data = self._parse_port_address(port.FullAddress)
-
-        self._aci_api_client.add_port_to_epg(pod=port_data["pod"],
-                                             node=port_data["node"],
-                                             module=port_data["slot"],
-                                             port=port_data["port"],
-                                             vlan_id=vlan_range,
-                                             port_mode=port_mode,
-                                             tenant_name=tenant_name,
-                                             epg_name=epg_name)
+        return [device.FullPath for device in port_resource.Connections]

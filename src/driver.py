@@ -212,7 +212,7 @@ if __name__ == "__main__":
     context.resource.name = 'tvm_m_2_fec7-7c42'
     context.resource.fullname = 'tvm_m_2_fec7-7c42'
     context.reservation = ReservationContextDetails(*(None, ) * 7)
-    context.reservation.reservation_id = 'a4ade72d-f86c-4c74-94c1-05084c370064'
+    context.reservation.reservation_id = '79350efb-51ba-4f3e-b54c-cd834706d188'
     context.resource.attributes = {}
     context.resource.attributes['{}.Scheme'.format(CiscoAciPortsAutoloadDriver.SHELL_NAME)] = "HTTPS"
     context.resource.attributes['{}.Controller TCP Port'.format(CiscoAciPortsAutoloadDriver.SHELL_NAME)] = 443
@@ -222,6 +222,9 @@ if __name__ == "__main__":
     context.connectivity = mock.MagicMock()
     context.connectivity.server_address = "192.168.85.28"
 
+    # add VLAN
+    action = "setVlan"
+    # action = "removeVlan"
     request = {"driverRequest": {"actions": [{"connectionId": "22ec7879-e996-4f9a-83ab-bf24f1107281",
                                     "connectionParams": {"vlanId": "1016", "mode": "Access", "vlanServiceAttributes": [
                                         {"attributeName": "QnQ", "attributeValue": "False",
@@ -242,7 +245,7 @@ if __name__ == "__main__":
                                     "actionTarget": {
                                         "fullName": "Cisco ACI Phys Ports/Pod 1/Node 101/Slot 1/Port 1",
                                         "fullAddress": "sandboxapicdc.cisco.com/PD1/N2/S1/P1", "type": "actionTarget"},
-                                    "customActionAttributes": [], "type": "setVlan"}]}}
+                                    "customActionAttributes": [], "type": action}]}}
 
     request = json.dumps(request)
     dr = CiscoAciPortsAutoloadDriver()

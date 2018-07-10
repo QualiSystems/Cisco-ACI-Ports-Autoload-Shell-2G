@@ -1,7 +1,7 @@
 from cloudshell.devices.runners.connectivity_runner import ConnectivityRunner
 
-from cisco.aci.controller.flows.add_port_to_epg import CiscoACIAddPortToEPGFlow
-from cisco.aci.controller.flows.remove_port_from_epg import CiscoACIRemovePortFromEPGFlow
+from cisco.aci.controller.flows.connectivity.add_port_to_epg import CiscoACIAddPortToEPGFlow
+from cisco.aci.controller.flows.connectivity.remove_port_from_epg import CiscoACIRemovePortFromEPGFlow
 
 
 class CiscoACIConnectivityRunner(ConnectivityRunner):
