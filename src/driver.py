@@ -80,27 +80,7 @@ class CiscoAciPortsAutoloadDriver(ResourceDriverInterface):
         logger = get_logger_with_thread_id(context)
         logger.info('ApplyConnectivityChanges started')
 
-        # todo: 1 request - will got all data for PORT and VLAN from There
-        # todo: 2 get all connectors from the reservation
-        # todo: 3 get current port full path - FullName
-        "sandbox.api.com/PD1/N2/S1/P1"
-        # reservation_id = context.remote_reservation.reservation_id
         reservation_id = context.reservation.reservation_id
-
-        # ipdb > xxx.ReservationDescription.Connectors[0].__dict__
-        # {'Direction': 'bi', 'Target': 'DUT 1/Chassis 1/Module 1/Port 1', 'Alias': 'Connection Failed',
-        #  'Source': 'VLAN 255', 'State': 'ConnectionFailed', 'Attributes': [], 'Type': 'Default'}
-        # ipdb > xxx.ReservationDescription.Connectors[1].__dict__
-        # {'Direction': 'bi', 'Target': 'Cisco ACI EPG Structure/database/database', 'Alias': None,
-        #  'Source': 'DUT 1/Chassis 1/Module 1/Port 1', 'State': 'None', 'Attributes': [], 'Type': 'Default'}
-
-        # ipdb > cs_api.GetResourceDetails("DUT 1/Chassis 1/Module 1/Port 1").FullAddress
-        # '10.10.10.10/CH1/M1/P1'
-
-        # ipdb > cs_api.GetResourceDetails("Cisco ACI EPG Structure/database/database").FullAddress
-        # 'sandboxapicdc.cisco.com/T3/EPG1
-
-        # logger.info("=" * 100)
 
         with ErrorHandlingContext(logger):
             resource_config = CiscoACIControllerResourse.from_context(context=context,
@@ -108,8 +88,7 @@ class CiscoAciPortsAutoloadDriver(ResourceDriverInterface):
                                                                       shell_name=self.SHELL_NAME)
 
             cs_api = get_api(context)
-            # password = cs_api.DecryptPassword(resource_config.password).Value
-            password = "ciscopsdt"
+            password = cs_api.DecryptPassword(resource_config.password).Value
 
             aci_api_client = CiscoACIControllerHTTPClient(logger=logger,
                                                           address=resource_config.address,
@@ -129,68 +108,6 @@ class CiscoAciPortsAutoloadDriver(ResourceDriverInterface):
             logger.info('Finished applying connectivity changes, response is: {0}'.format(str(result)))
 
             return result
-
-    def remote_add_port_to_endpoint_group(self, context):
-        """
-
-        :param context:
-        :return:
-        """
-        logger = get_logger_with_thread_id(context)
-        logger.info("Add Port to the Endpoint Group command started")
-
-        cs_api = get_api(context)
-        reservation_id = "7787550b-8c04-48a1-9940-401b670586ec"
-        import ipdb;ipdb.set_trace()
-
-        # VLAN_ID = 335
-        # EPG = "fancyapp"
-        # PORT = "pod-1/node-101/slot-1/35"
-
-        ################# CALLED ON THE DUT #################
-        # # reservation_id = context.remote_reservation.reservation_id
-        # reservation_id = "26c98cd8-0336-4b7f-8249-730ce2f53881"
-        # resource = Cisco API Ports Controller
-        # remote_endpoints = [CS_Port 1, CS_Port 2] <---- DUTS PORT
-        # remote_endpoint fullanme - the same as in connector DUT 1/Chassis 1/Module 1/Port 2
-
-        # cs_api = get_api(context)
-        # # todo: get reservation ID
-        #
-        #
-        # connectors = cs_api.ReservationDescription.Connectors
-        #
-        # # {'Direction': 'bi', 'Target': 'DUT 2/Chassis 1/Module 1/Port 2', 'Alias': None,
-        # #  'Source': 'DUT 1/Chassis 1/Module 1/Port 2', 'State': 'None', 'Attributes': [], 'Type': 'Default'}
-        #
-        # cs_api.GetReservationDetails(reservationId=reservation_id)
-        # cs_api.GetResourceDetails("DUT 1")
-        #
-        # # y = ii.ChildResources[0].ChildResources[0].ChildResources
-        # # ipdb > yy[0].Connections[0].__dict__
-        # # {'FullPath': 'DUT 2/Chassis 1/Module 1/Port 2', 'Weight': 10}
-
-        with ErrorHandlingContext(logger):
-            resource_config = CiscoACIControllerResourse.from_context(context=context,
-                                                                      shell_type=self.SHELL_TYPE,
-                                                                      shell_name=self.SHELL_NAME)
-
-            cs_api = get_api(context)
-            password = cs_api.DecryptPassword(resource_config.password).Value
-
-            aci_api_client = CiscoACIControllerHTTPClient(logger=logger,
-                                                          address=resource_config.address,
-                                                          user=resource_config.user,
-                                                          password=password,
-                                                          scheme=resource_config.scheme,
-                                                          port=resource_config.port)
-
-            connectivity_runner = CiscoACIConnectivityRunner(aci_api_client=aci_api_client,
-                                                             logger=logger,
-                                                             resource_config=resource_config)
-
-            connectivity_runner.add_port_to_epg(port=PORT, vlan_id=VLAN_ID, epg=EPG)
-            logger.info("Add Port to the Endpoint Group command completed")
 
 
 if __name__ == "__main__":
@@ -251,15 +168,13 @@ if __name__ == "__main__":
     dr = CiscoAciPortsAutoloadDriver()
     dr.initialize(context)
 
-    # result = dr.get_inventory(context)
-    # result = dr.remote_add_port_to_endpoint_group(context)
-    # with mock.patch('__main__.get_api') as get_api:
-    #     get_api.return_value = type('api', (object,), {
-    #         'DecryptPassword': lambda self, pw: type('Password', (object,), {'Value': pw})()})()
+    with mock.patch('__main__.get_api') as get_api:
+        get_api.return_value = type('api', (object,), {
+            'DecryptPassword': lambda self, pw: type('Password', (object,), {'Value': pw})()})()
 
-        # result = dr.get_inventory(context)
-        #
-        # for res in result.resources:
-        #     print res.__dict__
-        #
-    result = dr.ApplyConnectivityChanges(context, request)
+        result = dr.get_inventory(context)
+
+        for res in result.resources:
+            print res.__dict__
+
+    # result = dr.ApplyConnectivityChanges(context, request)
