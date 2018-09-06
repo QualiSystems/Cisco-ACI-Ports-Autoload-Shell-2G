@@ -12,6 +12,15 @@ PORT_MODE_MAP = {
 }
 
 
+class FixedFexInterface(aci.FexInterface):
+    @staticmethod
+    def is_interface():
+        """Override this method to fix acitoolkit bug
+
+        Without this FEX Interface data will not be added to the HTTP payload"""
+        return True
+
+
 class CiscoACIControllerHTTPClient(object):
     def __init__(self, logger, address, user=None, password=None, scheme="https", port=443):
         """
@@ -63,30 +72,40 @@ class CiscoACIControllerHTTPClient(object):
         raise Exception("Unable to find EPG with name '{}'".format(epg_name))
 
     def get_leaf_ports(self):
-        """Get leaf ports in the next format: pod->node->slot->port
+        """Get leaf ports in the next format: pod->node-><fex>->slot->port
 
         :return:
         """
-        ports_data = {}
+        ports_data = {"pods": {}}
         interfaces = aci.Interface.get(session=self._session)
 
         for interface in interfaces:
-            if interface.attributes['porttype'].lower() == "leaf":
-                nodes = ports_data.setdefault(interface.pod, {})
-                slots = nodes.setdefault(interface.node, {})
-                ports = slots.setdefault(interface.module, [])
-                ports.append({
+            if interface.porttype.lower() == "leaf":
+                pod_data = ports_data["pods"].setdefault(interface.pod, {"nodes": {}})
+                node_data = pod_data["nodes"].setdefault(interface.node, {"slots": {}, "fexs": {}})
+                slot_data = node_data["slots"].setdefault(interface.module, {"ports": []})
+                slot_data["ports"].append({
+                    "id": interface.port,
+                    "name": interface.name
+                })
+            elif interface.porttype == "extchhp":  # FEX ports
+                pod_data = ports_data["pods"].setdefault(interface.pod, {"nodes": {}})
+                node_data = pod_data["nodes"].setdefault(interface.node, {"slots": {}, "fexs": {}})
+                fex_data = node_data["fexs"].setdefault(interface.node, {"slots": {}})
+                slot_data = fex_data["slots"].setdefault(interface.module, {"ports": []})
+                slot_data["ports"].append({
                     "id": interface.port,
                     "name": interface.name
                 })
 
         return ports_data
 
-    def add_port_to_epg(self, pod, node, module, port, vlan_id, port_mode, tenant_name, app_profile_name, epg_name):
+    def add_port_to_epg(self, pod, node, fex, module, port, vlan_id, port_mode, tenant_name, app_profile_name, epg_name):
         """
 
         :param pod:
         :param node:
+        :param fex:
         :param module:
         :param port:
         :param vlan_id:
@@ -102,11 +121,19 @@ class CiscoACIControllerHTTPClient(object):
         epg = aci.EPG(epg_name=epg_name, parent=app)
 
         # create the physical interface object
-        intf = aci.Interface(interface_type=INTERFACE_TYPE,
-                             pod=pod,
-                             node=node,
-                             module=module,
-                             port=port)
+        if fex:
+            intf = FixedFexInterface(if_type=INTERFACE_TYPE,
+                                     pod=pod,
+                                     node=node,
+                                     fex=fex,
+                                     module=module,
+                                     port=port)
+        else:
+            intf = aci.Interface(interface_type=INTERFACE_TYPE,
+                                 pod=pod,
+                                 node=node,
+                                 module=module,
+                                 port=port)
 
         # create a VLAN interface and attach to the physical interface
         vlan_intf = aci.L2Interface(name=vlan_id,
@@ -125,13 +152,6 @@ class CiscoACIControllerHTTPClient(object):
 
         if not resp.ok:
             raise Exception('Could not push tenant configuration to APIC. Error response: {}'.format(resp.content))
-
-        # push the interface attachment to the APIC
-        self._logger.info("Pushed Interface data {}".format(intf.get_json()))
-        resp = intf.push_to_apic(self._session)
-
-        if not resp.ok:
-            raise Exception('Could not push interface configuration to APIC. Error response: {}'.format(resp.content))
 
     def remove_port_from_epg(self, pod, node, module, port, vlan_id, port_mode, tenant_name,
                              app_profile_name, epg_name):

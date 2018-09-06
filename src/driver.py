@@ -115,14 +115,21 @@ if __name__ == "__main__":
     import mock
     from cloudshell.shell.core.driver_context import ResourceCommandContext, ResourceContextDetails, ReservationContextDetails
 
-    address = "sandboxapicdc.cisco.com"
+    # TEST
+    # address = "sandboxapicdc.cisco.com"
+    # user = "admin"
+    # password = "ciscopsdt"
+    # port = 443
+    # scheme = "https"
+    # auth_key = 'h8WRxvHoWkmH8rLQz+Z/pg=='
+    # api_port = 8029
 
-    user = "admin"
-    password = "ciscopsdt"
-    port = 443
+    # PROD
+    address = "192.168.85.54"
+    user = "aci-dev-cali"
+    password = "Cisco.123!"
+    port = 8888
     scheme = "https"
-    auth_key = 'h8WRxvHoWkmH8rLQz+Z/pg=='
-    api_port = 8029
 
     context = ResourceCommandContext(*(None, ) * 4)
     context.resource = ResourceContextDetails(*(None, ) * 13)
@@ -132,7 +139,7 @@ if __name__ == "__main__":
     context.reservation.reservation_id = '79350efb-51ba-4f3e-b54c-cd834706d188'
     context.resource.attributes = {}
     context.resource.attributes['{}.Scheme'.format(CiscoAciPortsAutoloadDriver.SHELL_NAME)] = "HTTPS"
-    context.resource.attributes['{}.Controller TCP Port'.format(CiscoAciPortsAutoloadDriver.SHELL_NAME)] = 443
+    context.resource.attributes['{}.Controller TCP Port'.format(CiscoAciPortsAutoloadDriver.SHELL_NAME)] = port
     context.resource.attributes['{}.User'.format(CiscoAciPortsAutoloadDriver.SHELL_NAME)] = user
     context.resource.attributes['{}.Password'.format(CiscoAciPortsAutoloadDriver.SHELL_NAME)] = password
     context.resource.address = address
@@ -143,7 +150,7 @@ if __name__ == "__main__":
     action = "setVlan"
     # action = "removeVlan"
     request = {"driverRequest": {"actions": [{"connectionId": "22ec7879-e996-4f9a-83ab-bf24f1107281",
-                                    "connectionParams": {"vlanId": "1016", "mode": "Access", "vlanServiceAttributes": [
+                                    "connectionParams": {"vlanId": "10", "mode": "Access", "vlanServiceAttributes": [
                                         {"attributeName": "QnQ", "attributeValue": "False",
                                          "type": "vlanServiceAttribute"},
                                         {"attributeName": "CTag", "attributeValue": "", "type": "vlanServiceAttribute"},
@@ -151,7 +158,7 @@ if __name__ == "__main__":
                                          "type": "vlanServiceAttribute"},
                                         {"attributeName": "Access Mode", "attributeValue": "Access",
                                          "type": "vlanServiceAttribute"},
-                                        {"attributeName": "VLAN ID", "attributeValue": "4011",
+                                        {"attributeName": "VLAN ID", "attributeValue": "10",
                                          "type": "vlanServiceAttribute"},
                                         {"attributeName": "Pool Name", "attributeValue": "",
                                          "type": "vlanServiceAttribute"},
@@ -177,4 +184,4 @@ if __name__ == "__main__":
         for res in result.resources:
             print res.__dict__
 
-    # result = dr.ApplyConnectivityChanges(context, request)
+        # result = dr.ApplyConnectivityChanges(context, request)
