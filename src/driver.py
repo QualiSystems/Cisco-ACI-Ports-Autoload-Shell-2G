@@ -133,10 +133,10 @@ if __name__ == "__main__":
 
     context = ResourceCommandContext(*(None, ) * 4)
     context.resource = ResourceContextDetails(*(None, ) * 13)
-    context.resource.name = 'tvm_m_2_fec7-7c42'
-    context.resource.fullname = 'tvm_m_2_fec7-7c42'
+    context.resource.name = 'Cisco ACI Ports Structure'
+    context.resource.fullname = 'Cisco ACI Ports Structure'
     context.reservation = ReservationContextDetails(*(None, ) * 7)
-    context.reservation.reservation_id = '79350efb-51ba-4f3e-b54c-cd834706d188'
+    context.reservation.reservation_id = 'a4d54f5b-f9b4-466b-8d52-49b07d762729'
     context.resource.attributes = {}
     context.resource.attributes['{}.Scheme'.format(CiscoAciPortsAutoloadDriver.SHELL_NAME)] = "HTTPS"
     context.resource.attributes['{}.Controller TCP Port'.format(CiscoAciPortsAutoloadDriver.SHELL_NAME)] = port
@@ -144,7 +144,7 @@ if __name__ == "__main__":
     context.resource.attributes['{}.Password'.format(CiscoAciPortsAutoloadDriver.SHELL_NAME)] = password
     context.resource.address = address
     context.connectivity = mock.MagicMock()
-    context.connectivity.server_address = "192.168.85.28"
+    context.connectivity.server_address = "192.168.85.12"
 
     # add VLAN
     action = "setVlan"
@@ -167,7 +167,7 @@ if __name__ == "__main__":
                                     "connectorAttributes": [],
                                     "actionId": "22ec7879-e996-4f9a-83ab-bf24f1107281_085a8f57-d09d-4f92-9201-0da098d14c06",
                                     "actionTarget": {
-                                        "fullName": "Cisco ACI Phys Ports/Pod 1/Node 101/Slot 1/Port 1",
+                                        "fullName": "Cisco ACI Ports Structure/Pod 1/Node 101/FEX 101/Slot 1/Port 1",
                                         "fullAddress": "sandboxapicdc.cisco.com/PD1/N2/S1/P1", "type": "actionTarget"},
                                     "customActionAttributes": [], "type": action}]}}
 
@@ -175,13 +175,13 @@ if __name__ == "__main__":
     dr = CiscoAciPortsAutoloadDriver()
     dr.initialize(context)
 
-    with mock.patch('__main__.get_api') as get_api:
-        get_api.return_value = type('api', (object,), {
-            'DecryptPassword': lambda self, pw: type('Password', (object,), {'Value': pw})()})()
+    # with mock.patch('__main__.get_api') as get_api:
+    #     get_api.return_value = type('api', (object,), {
+    #         'DecryptPassword': lambda self, pw: type('Password', (object,), {'Value': pw})()})()
 
-        result = dr.get_inventory(context)
+        # result = dr.get_inventory(context)
+        #
+        # for res in result.resources:
+        #     print res.__dict__
 
-        for res in result.resources:
-            print res.__dict__
-
-        # result = dr.ApplyConnectivityChanges(context, request)
+    result = dr.ApplyConnectivityChanges(context, request)

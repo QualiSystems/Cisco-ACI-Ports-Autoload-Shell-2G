@@ -87,6 +87,15 @@ class BasePortToEPGActionFlow(BaseFlow):
         """
         return re.search("^.*/PD(?P<pod>\d)/N(?P<node>.*)/S(?P<slot>.*)/P(?P<port>.*)$", port_address).groupdict()
 
+    def _parse_fex_port_address(self, fex_port_address):
+        """
+
+        :param port_address:
+        :return:
+        """
+        return re.search("^.*/PD(?P<pod>\d)/N(?P<node>.*)/F(?P<fex>.*)/FS(?P<slot>.*)/FP(?P<port>.*)$",
+                         fex_port_address).groupdict()
+
     def _get_phys_connected_device(self, port_resource):
         """
 

@@ -1,9 +1,9 @@
 from cloudshell.devices.standards.base import AbstractResource
 
-
+FEX_PORT_FAMILY = "CS_CiscoACIFexPort"
 AVAILABLE_SHELL_TYPES = ["CS_CiscoACIController", "CS_CiscoACIPod", "CS_CiscoACINode", "CS_CiscoACISlot",
                          "CS_CiscoACIPort", "CS_CiscoACISlot", "CS_CiscoACIFex", "CS_CiscoACIFexSlot",
-                         "CS_CiscoACIFexPort"]
+                         FEX_PORT_FAMILY]
 
 
 class CiscoACIController(AbstractResource):
@@ -144,7 +144,7 @@ class CiscoACIFexPort(AbstractResource):
     RESOURCE_MODEL = "Cisco ACI Fex Port"
     RELATIVE_PATH_TEMPLATE = "FP"
 
-    def __init__(self, shell_name, name, unique_id, shell_type="CS_CiscoACIFexPort"):
+    def __init__(self, shell_name, name, unique_id, shell_type=FEX_PORT_FAMILY):
         super(CiscoACIFexPort, self).__init__(shell_name, name, unique_id)
 
         if shell_name:

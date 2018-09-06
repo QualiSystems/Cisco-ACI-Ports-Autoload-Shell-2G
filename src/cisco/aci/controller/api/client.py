@@ -100,7 +100,8 @@ class CiscoACIControllerHTTPClient(object):
 
         return ports_data
 
-    def add_port_to_epg(self, pod, node, fex, module, port, vlan_id, port_mode, tenant_name, app_profile_name, epg_name):
+    def add_port_to_epg(self, pod, node, fex, module, port, vlan_id, port_mode, tenant_name, app_profile_name,
+                        epg_name):
         """
 
         :param pod:
@@ -121,19 +122,19 @@ class CiscoACIControllerHTTPClient(object):
         epg = aci.EPG(epg_name=epg_name, parent=app)
 
         # create the physical interface object
-        if fex:
+        if fex is None:
+            intf = aci.Interface(interface_type=INTERFACE_TYPE,
+                                 pod=pod,
+                                 node=node,
+                                 module=module,
+                                 port=port)
+        else:
             intf = FixedFexInterface(if_type=INTERFACE_TYPE,
                                      pod=pod,
                                      node=node,
                                      fex=fex,
                                      module=module,
                                      port=port)
-        else:
-            intf = aci.Interface(interface_type=INTERFACE_TYPE,
-                                 pod=pod,
-                                 node=node,
-                                 module=module,
-                                 port=port)
 
         # create a VLAN interface and attach to the physical interface
         vlan_intf = aci.L2Interface(name=vlan_id,
