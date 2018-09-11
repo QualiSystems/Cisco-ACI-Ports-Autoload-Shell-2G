@@ -154,12 +154,13 @@ class CiscoACIControllerHTTPClient(object):
         if not resp.ok:
             raise Exception('Could not push tenant configuration to APIC. Error response: {}'.format(resp.content))
 
-    def remove_port_from_epg(self, pod, node, module, port, vlan_id, port_mode, tenant_name,
+    def remove_port_from_epg(self, pod, node, fex, module, port, vlan_id, port_mode, tenant_name,
                              app_profile_name, epg_name):
         """
 
         :param pod:
         :param node:
+        :param fex:
         :param module:
         :param port:
         :param vlan_id:
@@ -175,11 +176,19 @@ class CiscoACIControllerHTTPClient(object):
         epg = aci.EPG(epg_name=epg_name, parent=app)
 
         # create the physical interface object
-        intf = aci.Interface(interface_type=INTERFACE_TYPE,
-                             pod=pod,
-                             node=node,
-                             module=module,
-                             port=port)
+        if fex is None:
+            intf = aci.Interface(interface_type=INTERFACE_TYPE,
+                                 pod=pod,
+                                 node=node,
+                                 module=module,
+                                 port=port)
+        else:
+            intf = FixedFexInterface(if_type=INTERFACE_TYPE,
+                                     pod=pod,
+                                     node=node,
+                                     fex=fex,
+                                     module=module,
+                                     port=port)
 
         # create a VLAN interface and attach to the physical interface
         vlan_intf = aci.L2Interface(name=vlan_id,

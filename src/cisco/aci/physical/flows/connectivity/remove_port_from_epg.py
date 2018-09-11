@@ -31,12 +31,13 @@ class CiscoACIRemovePortFromEPGFlow(BasePortToEPGActionFlow, RemoveVlanFlow):
 
         phys_connected_devices = self._get_phys_connected_device(port_resource=port)
 
-        tenant_name, app_profile_name, epg_name = self._get_epg_data(phys_connected_devices=phys_connected_devices)
+        port_data = self._get_port_data(port)
 
-        port_data = self._parse_port_address(port.FullAddress)
+        tenant_name, app_profile_name, epg_name = self._get_epg_data(phys_connected_devices=phys_connected_devices)
 
         self._aci_api_client.remove_port_from_epg(pod=port_data["pod"],
                                                   node=port_data["node"],
+                                                  fex=port_data.get("fex"),
                                                   module=port_data["slot"],
                                                   port=port_data["port"],
                                                   vlan_id=vlan_range,

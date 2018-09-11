@@ -2,8 +2,6 @@ from cloudshell.devices.flows.action_flows import AddVlanFlow
 
 from cisco.aci.physical.flows.connectivity.base_port_to_epg import BasePortToEPGActionFlow
 
-from cisco.aci.physical.autoload.models import FEX_PORT_FAMILY
-
 
 class CiscoACIAddPortToEPGFlow(BasePortToEPGActionFlow, AddVlanFlow):
     def __init__(self, resource_config, cs_api, aci_api_client, reservation_id, logger):
@@ -33,10 +31,7 @@ class CiscoACIAddPortToEPGFlow(BasePortToEPGActionFlow, AddVlanFlow):
 
         phys_connected_devices = self._get_phys_connected_device(port_resource=port)
 
-        if port.ResourceFamilyName == FEX_PORT_FAMILY:
-            port_data = self._parse_fex_port_address(port.FullAddress)
-        else:
-            port_data = self._parse_port_address(port.FullAddress)
+        port_data = self._get_port_data(port)
 
         tenant_name, app_profile_name, epg_name = self._get_epg_data(phys_connected_devices=phys_connected_devices)
 

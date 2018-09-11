@@ -3,11 +3,15 @@ import re
 from cloudshell.api.common_cloudshell_api import CloudShellAPIError
 from cloudshell.devices.flows.action_flows import BaseFlow
 
+from cisco.aci.physical.autoload.models import FEX_PORT_FAMILY
+
+
 ACI_TENANT_RESOURCE_MODEL = "Cisco ACI EPG Controller.CiscoACITenant"
 ACI_APP_PROFILE_RESOURCE_MODEL = "Cisco ACI EPG Controller.CiscoACIAppProfile"
 ACI_EPG_RESOURCE_MODEL = "Cisco ACI EPG Controller.CiscoACIEndPointGroup"
 ACI_NAME_ATTR = "ACI Name"
 CS_API_UNABLE_TO_LOCATE_ERROR_CODE = "102"
+
 
 
 class BasePortToEPGActionFlow(BaseFlow):
@@ -78,6 +82,17 @@ class BasePortToEPGActionFlow(BaseFlow):
                 return tenant_aci_name, app_profile_aci_name, epg_aci_name
 
         raise Exception("Unable to find connector to the EPG for port in the reservation")
+
+    def _get_port_data(self, port):
+        """
+
+        :param port:
+        :return:
+        """
+        if port.ResourceFamilyName == FEX_PORT_FAMILY:
+            return self._parse_fex_port_address(port.FullAddress)
+
+        return self._parse_port_address(port.FullAddress)
 
     def _parse_port_address(self, port_address):
         """
