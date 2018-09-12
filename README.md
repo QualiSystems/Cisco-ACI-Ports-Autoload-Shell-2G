@@ -39,7 +39,7 @@ This section describes the automation (drivers or scripts) associated with the d
 
 |Command |Description|
 |---|---|
-|`Autoload`|`Discovers ACI Ports Structure. Add Nodes, FEXs, Slots and Ports to the resource model`|
+|`Autoload`|`Discovers ACI Ports Structure. Add Pods, Nodes, FEXs, Slots and Ports to the resource model`|
 
 ## Import and Configure Shell
 This section describes how to import, configure and modify Cisco ACI Ports Autoload Shell 2G
