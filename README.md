@@ -58,8 +58,8 @@ Use the following procedure to import the downloaded Shell:
 ___
 **Note:** Offline installation instructions are relevant only if Cloudshell Execution Server has no access to PyPi. You can skip this section if your execution server has access to Pypi.
 ___
-Cisco ACI EPG Autoload Shell 2G uses a variety of Python packages. To work in offline mode:
-  1. Download the cisco-aci-epg-autoload-offline-dependecies.zip file (see "Downloading the Shell" section).
+Cisco ACI Ports Autoload Shell 2G uses a variety of Python packages. To work in offline mode:
+  1. Download the cisco-aci-ports-autoload-offline-dependecies.zip file (see "Downloading the Shell" section).
   2. Unzip it into the "C:\Program Files (x86)\QualiSystems\CloudShell\Server\Config\Pypi Server Repository" folder
   3. Restart Execution Server.
 
