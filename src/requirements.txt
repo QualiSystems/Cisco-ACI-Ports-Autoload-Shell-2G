@@ -2,4 +2,4 @@ acitoolkit==0.4
 cloudshell-networking-devices>=2.5,<2.6
 cloudshell-shell-core>=4.0.0,<4.1.0
 cloudshell-networking>=5.1.0,<5.2.0
-#git+https://github.com/QualiSystems/cloudshell-cisco-aci.git
+cloudshell-cisco-aci>=1.0.0,<1.1.0
