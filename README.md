@@ -31,7 +31,7 @@ The **Cisco ACI Ports Autoload 2G** shell provides you with connectivity and man
 For more information on the **Cisco ACI**, see the official **Cisco** product documentation.
 
 ### Standard version
-**Cisco ACI Ports Autoload 2G Shell** is based on the Cloudshell Cisco ACI Standard version **1.0.0**.
+The **Cisco ACI Ports Autoload 2G** shell is based on the Cloudshell Cisco ACI Standard version **1.0.0**.
 
 ### Requirements
 
@@ -69,8 +69,8 @@ Attribute Name | Data Type | User input? | Description | Family Attribute?
 User | String | Yes | | No
 Password | Password | Yes | | No
 Model Name | String | No | The Controller model/vendor in a readable format (used by the GUI for display). This information is typically used for abstract resource filtering. | Yes
-Controller TCP Port | Integer | Yes |  default is 443. | No
-Scheme | String | Yes | two options: HTTP, HTTPS | No
+Controller TCP Port | Integer | Yes |  Default is 443. | No
+Scheme | String | Yes | Options include: HTTP, HTTPS | No
 
 ### Automation
 This section describes the automation (drivers) associated with the data model. The shell’s driver is provided as part of the shell package. There are two types of automation processes, Autoload and Resource.  Autoload is executed when creating the resource in the **Inventory** dashboard, while resource commands are run in the sandbox.
@@ -194,23 +194,22 @@ In online mode, the execution server automatically downloads and extracts the ap
 
 #### **Workflow 1** - *Add Cisco ACI Port to the EndPointGroup*
 1. Create a physical connection between the Cisco ACI Port and some DUT/Switch
-    1. In the Resource Manager, open the **Cisco ACI Ports Autoload** resource in the **Resource Explorer** tab
-    1. Open the **Configuration** menu and click on the **Connections** tab
-    2. Connect Cisco ACI Port to some DUT/Switch:
+    1. In Resource Manager, **Resource Explorer** pane, open the **Cisco ACI Ports Autoload** resource.
+    1. Right-click the resource, select **Configuration** from the context menu and click on the **Connections** button at the bottom of the **Resource Configuration** page
+    2. Connect the Cisco ACI Port to some DUT/Switch:
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;![](https://github.com/QualiSystems/Cisco-ACI-EPG-Autoload-Shell-2G/blob/master/docs/images/cisco_aci_port_to_dut_phys_connection.png)
-    3. Save changes
+    3. Save your changes
 
-2. In the CloudShell Portal, add the **Cisco ACI EPG Autoload** and DUT/Switch (where you connected Cisco ACI Ports) resources to your blueprint.
+2. In CloudShell Portal, add the **Cisco ACI EPG Autoload** resource and the DUT/Switch resource (where you connected the Cisco ACI Ports) to your blueprint.
 
-3. In the blueprint toolbar, click App/Service>Networking and drag the VLAN AUTO service into the diagram.
+3. In the diagram view of the blueprint toolbar, click **App/Service>Networking** and drag the **VLAN AUTO** service into the diagram.
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;![](https://github.com/QualiSystems/Cisco-ACI-EPG-Autoload-Shell-2G/blob/master/docs/images/reservation_with_cisco_aci_epg_dut_and_vlan_service.jpeg)
 
-4. Create a connector between DUT/Switch port (which was connected earlier to the Cisco ACI Port) and Cisco ACI EPG
-Autoload resource. Select the EndPoint Group you want to associate with the Cisco ACI Port.
+4. Create a connection between the DUT/Switch port (which you connected earlier to the Cisco ACI Port) and the **Cisco ACI EPG Autoload** resource. Select the EndPoint Group you want to associate with the Cisco ACI Port.
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;![](https://github.com/QualiSystems/Cisco-ACI-EPG-Autoload-Shell-2G/blob/master/docs/images/cisco_aci_epg_dut_connector.jpeg)
 
-5. Create a connector between DUT/Switch port and VLAN Auto Service.
+5. Create a connection between the DUT/Switch port and the VLAN Auto Service.
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;![](https://github.com/QualiSystems/Cisco-ACI-EPG-Autoload-Shell-2G/blob/master/docs/images/cisco_aci_epg_vlan_service_connector.jpeg)
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;![](https://github.com/QualiSystems/Cisco-ACI-EPG-Autoload-Shell-2G/blob/master/docs/images/reservation_with_cisco_aci_epg_dut_and_vlan_service_with_connectors.jpeg)
