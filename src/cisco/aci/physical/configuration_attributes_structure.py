@@ -1,7 +1,15 @@
 class CiscoACIControllerResourse(object):
-    def __init__(self, address=None, family=None, shell_type=None, shell_name=None,
-                 fullname=None, name=None, attributes=None):
-        """
+    def __init__(
+        self,
+        address=None,
+        family=None,
+        shell_type=None,
+        shell_name=None,
+        fullname=None,
+        name=None,
+        attributes=None,
+    ):
+        """ACI Controller resource object.
 
         :param str address: IP address of the resource
         :param str family: resource family
@@ -26,7 +34,7 @@ class CiscoACIControllerResourse(object):
 
     @property
     def user(self):
-        """Cisco ACI Controller user
+        """Cisco ACI Controller user.
 
         :rtype: str
         """
@@ -34,7 +42,7 @@ class CiscoACIControllerResourse(object):
 
     @property
     def password(self):
-        """Cisco ACI Controller password
+        """Cisco ACI Controller password.
 
         :rtype: str
         """
@@ -42,15 +50,17 @@ class CiscoACIControllerResourse(object):
 
     @property
     def port(self):
-        """Cisco ACI Controller port
+        """Cisco ACI Controller port.
 
         :rtype: str
         """
-        return self.attributes.get("{}Controller TCP Port".format(self.namespace_prefix), None)
+        return self.attributes.get(
+            "{}Controller TCP Port".format(self.namespace_prefix), None
+        )
 
     @property
     def scheme(self):
-        """Cisco ACI Controller scheme (http|https)
+        """Cisco ACI Controller scheme http or https.
 
         :rtype: str
         """
@@ -58,17 +68,19 @@ class CiscoACIControllerResourse(object):
 
     @classmethod
     def from_context(cls, context, shell_type=None, shell_name=None):
-        """Create an instance of TrafficGeneratorVBladeResource from the given context
+        """Create an instance of TrafficGeneratorVBladeResource from the given context.
 
         :param cloudshell.shell.core.driver_context.ResourceCommandContext context:
         :param str shell_type: shell type
         :param str shell_name: shell name
         :rtype: TrafficGeneratorVChassisResource
         """
-        return cls(address=context.resource.address,
-                   family=context.resource.family,
-                   shell_type=shell_type,
-                   shell_name=shell_name,
-                   fullname=context.resource.fullname,
-                   attributes=dict(context.resource.attributes),
-                   name=context.resource.name)
+        return cls(
+            address=context.resource.address,
+            family=context.resource.family,
+            shell_type=shell_type,
+            shell_name=shell_name,
+            fullname=context.resource.fullname,
+            attributes=dict(context.resource.attributes),
+            name=context.resource.name,
+        )
