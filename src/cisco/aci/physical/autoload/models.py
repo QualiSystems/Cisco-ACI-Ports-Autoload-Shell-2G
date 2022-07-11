@@ -1,9 +1,17 @@
 from cloudshell.devices.standards.base import AbstractResource
 
 FEX_PORT_FAMILY = "CS_CiscoACIFexPort"
-AVAILABLE_SHELL_TYPES = ["CS_CiscoACIController", "CS_CiscoACIPod", "CS_CiscoACINode", "CS_CiscoACISlot",
-                         "CS_CiscoACIPort", "CS_CiscoACISlot", "CS_CiscoACIFex", "CS_CiscoACIFexSlot",
-                         FEX_PORT_FAMILY]
+AVAILABLE_SHELL_TYPES = [
+    "CS_CiscoACIController",
+    "CS_CiscoACIPod",
+    "CS_CiscoACINode",
+    "CS_CiscoACISlot",
+    "CS_CiscoACIPort",
+    "CS_CiscoACISlot",
+    "CS_CiscoACIFex",
+    "CS_CiscoACIFexSlot",
+    FEX_PORT_FAMILY,
+]
 
 
 class CiscoACIController(AbstractResource):
@@ -18,9 +26,13 @@ class CiscoACIController(AbstractResource):
             if shell_type in AVAILABLE_SHELL_TYPES:
                 self.shell_type = "{}.".format(shell_type)
             else:
-                raise Exception(self.__class__.__name__, "Unavailable shell type {shell_type}."
-                                                         "Shell type should be one of: {avail}"
-                                .format(shell_type=shell_type, avail=", ".join(AVAILABLE_SHELL_TYPES)))
+                raise Exception(
+                    self.__class__.__name__,
+                    "Unavailable shell type {shell_type}."
+                    "Shell type should be one of: {avail}".format(
+                        shell_type=shell_type, avail=", ".join(AVAILABLE_SHELL_TYPES)
+                    ),
+                )
         else:
             self.shell_name = ""
             self.shell_type = ""
@@ -37,9 +49,13 @@ class CiscoACIPod(AbstractResource):
             if shell_type in AVAILABLE_SHELL_TYPES:
                 self.shell_type = "{}.".format(shell_type)
             else:
-                raise Exception(self.__class__.__name__, "Unavailable shell type {shell_type}."
-                                                         "Shell type should be one of: {avail}"
-                                .format(shell_type=shell_type, avail=", ".join(AVAILABLE_SHELL_TYPES)))
+                raise Exception(
+                    self.__class__.__name__,
+                    "Unavailable shell type {shell_type}."
+                    "Shell type should be one of: {avail}".format(
+                        shell_type=shell_type, avail=", ".join(AVAILABLE_SHELL_TYPES)
+                    ),
+                )
         else:
             self.shell_name = ""
             self.shell_type = ""
@@ -56,9 +72,13 @@ class CiscoACINode(AbstractResource):
             if shell_type in AVAILABLE_SHELL_TYPES:
                 self.shell_type = "{}.".format(shell_type)
             else:
-                raise Exception(self.__class__.__name__, "Unavailable shell type {shell_type}."
-                                                         "Shell type should be one of: {avail}"
-                                .format(shell_type=shell_type, avail=", ".join(AVAILABLE_SHELL_TYPES)))
+                raise Exception(
+                    self.__class__.__name__,
+                    "Unavailable shell type {shell_type}."
+                    "Shell type should be one of: {avail}".format(
+                        shell_type=shell_type, avail=", ".join(AVAILABLE_SHELL_TYPES)
+                    ),
+                )
         else:
             self.shell_name = ""
             self.shell_type = ""
@@ -75,9 +95,13 @@ class CiscoACISlot(AbstractResource):
             if shell_type in AVAILABLE_SHELL_TYPES:
                 self.shell_type = "{}.".format(shell_type)
             else:
-                raise Exception(self.__class__.__name__, "Unavailable shell type {shell_type}."
-                                                         "Shell type should be one of: {avail}"
-                                .format(shell_type=shell_type, avail=", ".join(AVAILABLE_SHELL_TYPES)))
+                raise Exception(
+                    self.__class__.__name__,
+                    "Unavailable shell type {shell_type}."
+                    "Shell type should be one of: {avail}".format(
+                        shell_type=shell_type, avail=", ".join(AVAILABLE_SHELL_TYPES)
+                    ),
+                )
         else:
             self.shell_name = ""
             self.shell_type = ""
@@ -94,9 +118,13 @@ class CiscoACIPort(AbstractResource):
             if shell_type in AVAILABLE_SHELL_TYPES:
                 self.shell_type = "{}.".format(shell_type)
             else:
-                raise Exception(self.__class__.__name__, "Unavailable shell type {shell_type}."
-                                                         "Shell type should be one of: {avail}"
-                                .format(shell_type=shell_type, avail=", ".join(AVAILABLE_SHELL_TYPES)))
+                raise Exception(
+                    self.__class__.__name__,
+                    "Unavailable shell type {shell_type}."
+                    "Shell type should be one of: {avail}".format(
+                        shell_type=shell_type, avail=", ".join(AVAILABLE_SHELL_TYPES)
+                    ),
+                )
         else:
             self.shell_name = ""
             self.shell_type = ""
@@ -113,9 +141,13 @@ class CiscoACIFex(AbstractResource):
             if shell_type in AVAILABLE_SHELL_TYPES:
                 self.shell_type = "{}.".format(shell_type)
             else:
-                raise Exception(self.__class__.__name__, "Unavailable shell type {shell_type}."
-                                                         "Shell type should be one of: {avail}"
-                                .format(shell_type=shell_type, avail=", ".join(AVAILABLE_SHELL_TYPES)))
+                raise Exception(
+                    self.__class__.__name__,
+                    "Unavailable shell type {shell_type}."
+                    "Shell type should be one of: {avail}".format(
+                        shell_type=shell_type, avail=", ".join(AVAILABLE_SHELL_TYPES)
+                    ),
+                )
         else:
             self.shell_name = ""
             self.shell_type = ""
@@ -132,9 +164,13 @@ class CiscoACIFexSlot(AbstractResource):
             if shell_type in AVAILABLE_SHELL_TYPES:
                 self.shell_type = "{}.".format(shell_type)
             else:
-                raise Exception(self.__class__.__name__, "Unavailable shell type {shell_type}."
-                                                         "Shell type should be one of: {avail}"
-                                .format(shell_type=shell_type, avail=", ".join(AVAILABLE_SHELL_TYPES)))
+                raise Exception(
+                    self.__class__.__name__,
+                    "Unavailable shell type {shell_type}."
+                    "Shell type should be one of: {avail}".format(
+                        shell_type=shell_type, avail=", ".join(AVAILABLE_SHELL_TYPES)
+                    ),
+                )
         else:
             self.shell_name = ""
             self.shell_type = ""
@@ -151,9 +187,13 @@ class CiscoACIFexPort(AbstractResource):
             if shell_type in AVAILABLE_SHELL_TYPES:
                 self.shell_type = "{}.".format(shell_type)
             else:
-                raise Exception(self.__class__.__name__, "Unavailable shell type {shell_type}."
-                                                         "Shell type should be one of: {avail}"
-                                .format(shell_type=shell_type, avail=", ".join(AVAILABLE_SHELL_TYPES)))
+                raise Exception(
+                    self.__class__.__name__,
+                    "Unavailable shell type {shell_type}."
+                    "Shell type should be one of: {avail}".format(
+                        shell_type=shell_type, avail=", ".join(AVAILABLE_SHELL_TYPES)
+                    ),
+                )
         else:
             self.shell_name = ""
             self.shell_type = ""
